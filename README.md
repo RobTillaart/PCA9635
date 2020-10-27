@@ -58,7 +58,7 @@ single flag (bit masking)
 
 **getGroupFREQ()** returns the freq of the PWM group.
 
-**lastERror()** returns **PCA9635_OK** if all is OK, and other error codes otherwise.
+**lastError()** returns **PCA9635_OK** if all is OK, and other error codes otherwise.
 
 | Error code | Value | Description |
 |:----|:----:|:----|
