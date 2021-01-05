@@ -60,8 +60,6 @@ unittest(test_constructor)
 
 unittest(test_LedDriverMode)
 {
-  fprintf(stderr, "VERSION: %s\n", );
-
   PCA9635 ledArray(0x20);
   assertTrue(ledArray.begin());
 

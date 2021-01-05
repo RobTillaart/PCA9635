@@ -10,6 +10,7 @@
 
 
 #include "Arduino.h"
+#include "Wire.h"
 
 
 #define PCA9635_LIB_VERSION         (F("0.2.1"))
@@ -57,10 +58,10 @@ public:
 
   // single PWM setting
   uint8_t  write1(uint8_t channel, uint8_t value);
-	
+  
   // RGB setting, write three consecutive PWM registers
   uint8_t  write3(uint8_t channel, uint8_t R, uint8_t G, uint8_t B);
-	
+  
   // generic worker, write N consecutive PWM registers
   uint8_t  writeN(uint8_t channel, uint8_t* arr, uint8_t count);
 

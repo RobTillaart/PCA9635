@@ -14,11 +14,14 @@
 //  0.1.0   2016-04-23  initial BETA version
 //
 
+
 #include "PCA9635.h"
 
-#include "Wire.h"
 
-
+//////////////////////////////////////////////////////////////
+//
+// Constructor
+//
 PCA9635::PCA9635(const uint8_t deviceAddress)
 {
   _address = deviceAddress;
