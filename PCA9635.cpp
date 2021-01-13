@@ -2,17 +2,18 @@
 //    FILE: PCA9635.cpp
 //  AUTHOR: Rob Tillaart
 //    DATE: 23-apr-2016
-// VERSION: 0.2.0
+// VERSION: 0.2.2
 // PURPOSE: Arduino library for PCA9635 I2C LED driver
 //     URL: https://github.com/RobTillaart/PCA9635
 //
 //  HISTORY:
+//  0.2.2   2021-01-13  refactor + fix register index error.
 //  0.2.1   2021-01-05  arduino-CI + unit test
 //  0.2.0   2020-05-26  major refactor; ESP32 support
 //  0.1.2   2020-05-07  fix for PCA9635_MODE1
 //  0.1.1   2016-04-24  set autoincr in constructor
 //  0.1.0   2016-04-23  initial BETA version
-//
+
 
 
 #include "PCA9635.h"
@@ -81,10 +82,10 @@ uint8_t PCA9635::write3(uint8_t channel, uint8_t R, uint8_t G, uint8_t B)
 
 
 // write count values in consecutive PWM registers
-// does not check if [channel + count > 16]
+// checks if [channel + count >= 16]
 uint8_t PCA9635::writeN(uint8_t channel, uint8_t* arr, uint8_t count)
 {
-  if (channel + count > 16)
+  if (channel + count > 15)
   {
     _error = PCA9635_ERR_WRITE;
     return PCA9635_ERROR;
@@ -111,18 +112,19 @@ uint8_t PCA9635::writeMode(uint8_t reg, uint8_t value)
   if ((reg == PCA9635_MODE1) || (reg == PCA9635_MODE2))
   {
     writeReg(reg, value);
-	return PCA9635_OK;
+    return PCA9635_OK;
   }
   _error = PCA9635_ERR_REG;
   return PCA9635_ERROR;
 }
 
 
-// Note 0xFF can also mean an error....  
+// Note 0xFF can also mean an error....  check error flag..
 uint8_t PCA9635::readMode(uint8_t reg)
 {
   if ((reg == PCA9635_MODE1) || (reg == PCA9635_MODE2))
   {
+    _error = PCA9635_OK;
     uint8_t value = readReg(reg);
     return value;
   }
@@ -184,12 +186,15 @@ int PCA9635::lastError()
 //
 // PRIVATE
 //
-void PCA9635::writeReg(uint8_t reg, uint8_t value)
+uint8_t PCA9635::writeReg(uint8_t reg, uint8_t value)
 {
   Wire.beginTransmission(_address);
   Wire.write(reg);
   Wire.write(value);
   _error = Wire.endTransmission();
+  if (_error == 0) _error = PCA9635_OK;
+  else _error = PCA9635_ERR_I2C;
+  return _error;
 }
 
 
@@ -203,6 +208,7 @@ uint8_t PCA9635::readReg(uint8_t reg)
     _error = PCA9635_ERROR;
     return 0;
   }
+  _error = PCA9635_OK;
   _data = Wire.read();
   return _data;
 }
