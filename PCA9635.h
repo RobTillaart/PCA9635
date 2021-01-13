@@ -3,7 +3,7 @@
 //    FILE: PCA9635.H
 //  AUTHOR: Rob Tillaart
 //    DATE: 23-apr-2016
-// VERSION: 0.2.1
+// VERSION: 0.2.2
 // PURPOSE: Arduino library for PCA9635 I2C LED driver
 //     URL: https://github.com/RobTillaart/PCA9635
 //
@@ -13,7 +13,7 @@
 #include "Wire.h"
 
 
-#define PCA9635_LIB_VERSION         (F("0.2.1"))
+#define PCA9635_LIB_VERSION         (F("0.2.2"))
 
 #define PCA9635_MODE1               0x00
 #define PCA9635_MODE2               0x01
@@ -40,6 +40,7 @@
 // NOT IMPLEMENTED YET
 #define PCA9635_SUBADR(x)   (0x17+(x))  // x = 1..3
 #define PCA9635_ALLCALLADR  0x1B
+
 
 class PCA9635
 {
@@ -81,7 +82,7 @@ public:
 
 private:
   // DIRECT CONTROL
-  void     writeReg(uint8_t reg, uint8_t value);
+  uint8_t  writeReg(uint8_t reg, uint8_t value);  // returns error status.
   uint8_t  readReg(uint8_t reg);
 
   uint8_t  _address;
