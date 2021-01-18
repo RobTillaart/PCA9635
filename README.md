@@ -21,7 +21,7 @@ of the PWM signal.
 
 ### Constructor
 
-- **PCA9635(deviceAddress)** I2C address
+- **PCA9635(deviceAddress, TwoWire \*wire = &Wire)** Constructor with I2C device address, and optional the Wire interface as parameter.
 - **begin()** initializes the library after startup. Mandatory.
 - **begin(sda, scl)** idem, ESP32 ESP8266 only. Library does not support 
 multiple Wire instances (yet).

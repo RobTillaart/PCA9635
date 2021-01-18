@@ -2,11 +2,12 @@
 //    FILE: PCA9635.cpp
 //  AUTHOR: Rob Tillaart
 //    DATE: 23-apr-2016
-// VERSION: 0.2.2
+// VERSION: 0.3.0
 // PURPOSE: Arduino library for PCA9635 I2C LED driver
 //     URL: https://github.com/RobTillaart/PCA9635
 //
 //  HISTORY:
+//  0.3.0   2021-01-18  support Wire1..WireN
 //  0.2.2   2021-01-13  refactor + fix register index error.
 //  0.2.1   2021-01-05  arduino-CI + unit test
 //  0.2.0   2020-05-26  major refactor; ESP32 support
@@ -23,16 +24,23 @@
 //
 // Constructor
 //
-PCA9635::PCA9635(const uint8_t deviceAddress)
+PCA9635::PCA9635(const uint8_t deviceAddress, TwoWire *wire)
 {
   _address = deviceAddress;
+  _wire    = wire;
 }
 
 
 #if defined (ESP8266) || defined(ESP32)
 bool PCA9635::begin(uint8_t sda, uint8_t scl)
 {
-  Wire.begin(sda, scl);
+  _wire = &Wire;
+  if ((sda < 255) && (scl < 255))
+  {
+    _wire->begin(sda, scl);
+  } else {
+    _wire->begin();
+  }
   if (! isConnected()) return false;
   reset();
   return true;
@@ -42,7 +50,7 @@ bool PCA9635::begin(uint8_t sda, uint8_t scl)
 
 bool PCA9635::begin()
 {
-  Wire.begin();
+  _wire->begin();
   if (! isConnected()) return false;
   reset();
   return true;
@@ -51,8 +59,8 @@ bool PCA9635::begin()
 
 bool PCA9635::isConnected()
 {
-  Wire.beginTransmission(_address);
-  _error = Wire.endTransmission();
+  _wire->beginTransmission(_address);
+  _error = _wire->endTransmission();
   return (_error == 0);
 }
 
@@ -91,13 +99,13 @@ uint8_t PCA9635::writeN(uint8_t channel, uint8_t* arr, uint8_t count)
     return PCA9635_ERROR;
   }
   uint8_t base = PCA9635_PWM(channel);
-  Wire.beginTransmission(_address);
-  Wire.write(base);
+  _wire->beginTransmission(_address);
+  _wire->write(base);
   for(uint8_t i = 0; i < count; i++)
   {
-    Wire.write(arr[i]);
+    _wire->write(arr[i]);
   }
-  _error = Wire.endTransmission();
+  _error = _wire->endTransmission();
   if (_error != 0)
   {
     _error = PCA9635_ERR_I2C;
@@ -188,10 +196,10 @@ int PCA9635::lastError()
 //
 uint8_t PCA9635::writeReg(uint8_t reg, uint8_t value)
 {
-  Wire.beginTransmission(_address);
-  Wire.write(reg);
-  Wire.write(value);
-  _error = Wire.endTransmission();
+  _wire->beginTransmission(_address);
+  _wire->write(reg);
+  _wire->write(value);
+  _error = _wire->endTransmission();
   if (_error == 0) _error = PCA9635_OK;
   else _error = PCA9635_ERR_I2C;
   return _error;
@@ -200,16 +208,16 @@ uint8_t PCA9635::writeReg(uint8_t reg, uint8_t value)
 
 uint8_t PCA9635::readReg(uint8_t reg)
 {
-  Wire.beginTransmission(_address);
-  Wire.write(reg);
-  _error = Wire.endTransmission();
-  if (Wire.requestFrom(_address, (uint8_t)1) != 1)
+  _wire->beginTransmission(_address);
+  _wire->write(reg);
+  _error = _wire->endTransmission();
+  if (_wire->requestFrom(_address, (uint8_t)1) != 1)
   {
     _error = PCA9635_ERROR;
     return 0;
   }
   _error = PCA9635_OK;
-  _data = Wire.read();
+  _data = _wire->read();
   return _data;
 }
 
