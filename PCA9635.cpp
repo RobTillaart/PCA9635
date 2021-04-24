@@ -90,10 +90,10 @@ uint8_t PCA9635::write3(uint8_t channel, uint8_t R, uint8_t G, uint8_t B)
 
 
 // write count values in consecutive PWM registers
-// checks if [channel + count >= 16]
+// checks if [channel + count - 1 > 15]
 uint8_t PCA9635::writeN(uint8_t channel, uint8_t* arr, uint8_t count)
 {
-  if (channel + count > 15)
+  if (channel + count > 16)
   {
     _error = PCA9635_ERR_WRITE;
     return PCA9635_ERROR;
