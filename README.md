@@ -15,7 +15,7 @@ Arduino library for PCA9635 I2C 8 bit PWM LED driver.
 
 This library is to control the I2C PCA9635 PWM extender.
 The 16 channels are independently configurable is steps of 1/256.
-this allows for better than 1% finetuning of the duty-cycle
+this allows for better than 1% fine tuning of the duty-cycle
 of the PWM signal. 
 
 
@@ -53,13 +53,14 @@ This is ideal to trigger e.g. multiple LEDs (servo's) at same time.
 
 - **uint8_t write1(uint8_t channel, uint8_t value)** writes a single 8 bit PWM value.
 - **uint8_t write3(uint8_t channel, uint8_t R, uint8_t G, uint8_t B)** writes three consecutive PWM registers.
+typical use is to write R, G, B values for a full colour LED.
 - **uint8_t writeN(uint8_t channel, uint8_t \* array, uint8_t count)** write count consecutive PWM registers. 
 May return **PCA9635_ERR_WRITE** if array has too many elements 
-(including channel as offset)
+(including channel as offset).
 - **uint8_t writeMode(uint8_t reg, uint8_t value)** configuration of one of the two configuration registers.
 check datasheet for details.
 - **uint8_t readMode(uint8_t reg)** reads back the configured mode, 
-useful to add or remove a single flag (bit masking)
+useful to add or remove a single flag (bit masking).
 
 
 ### Group PWM and frequency
@@ -89,9 +90,11 @@ useful to add or remove a single flag (bit masking)
 
 See examples
 
+
 ## Future
 
 - improve documentation
 - unit tests
-- examples
+- add examples
+
 
