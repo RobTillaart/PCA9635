@@ -31,6 +31,7 @@ and optional the Wire interface as parameter.
 multiple Wire instances (yet).
 - **void reset()** resets the library to start up conditions.
 - **bool isConnected()** checks if address is available on I2C bus.
+- **uint8_t channelCount()** returns the number of channels = 16.
 
 
 ### LedDriverMode
