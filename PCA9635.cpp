@@ -21,8 +21,6 @@
 //  0.1.0   2016-04-23  initial BETA version
 
 
-
-
 #include "PCA9635.h"
 
 
@@ -76,7 +74,9 @@ void PCA9635::reset()
 {
   _data = 0;
   _error = 0;
-  writeReg(PCA9635_MODE1, 0x81);  //  AUTOINCR | NOSLEEP | ALLADRR
+
+  uint8_t mode1_mask = PCA9635_MODE1_AUTOINCR2 | PCA9635_MODE1_ALLCALL;
+  writeReg(PCA9635_MODE1, mode1_mask);  //  AUTOINCR | NOSLEEP | ALLADRR  0x81
 }
 
 

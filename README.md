@@ -77,6 +77,8 @@ useful to add or remove a single flag (bit masking).
 
 #### Constants for mode registers
 
+(added 0.3.4)
+
 | Name                    | Value | Description                     |
 |:------------------------|:-----:|:--------------------------------|
 | PCA9635_MODE1_AUTOINCR2 | 0x80  | RO, 0 = disable  1 = enable     |
@@ -92,6 +94,18 @@ useful to add or remove a single flag (bit masking).
 | PCA9635_MODE2_INVERT    | 0x10  | 0 = normal       1 = inverted   |
 | PCA9635_MODE2_STOP      | 0x08  | 0 = on STOP      1 = on ACK     |
 | PCA9635_MODE2_TOTEMPOLE | 0x04  | 0 = open drain   1 = totem-pole |
+
+These constants makes it easier to set modes without using a non descriptive
+bitmask. The constants can be merged by OR-ing them together, see snippet:
+
+```cpp
+ledArray.writeMode(PCA9635_MODE2, 0b00110100);
+
+// would become
+
+uint8_t mode2_mask = PCA9635_MODE2_BLINK | PCA9635_MODE2_INVERT | PCA9635_MODE2_TOTEMPOLE;
+ledArray.writeMode(PCA9635_MODE2, mode2_mask);
+```
 
 
 ### Group PWM and frequency
