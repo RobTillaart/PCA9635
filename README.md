@@ -31,7 +31,7 @@ library is related to the 8 channel PCA9634 class.
 and optional the Wire interface as parameter.
 - **bool begin()** initializes the library after startup. Mandatory.
 - **bool begin(uint8_t sda, uint8_t scl)** idem, ESP32 ESP8266 only. 
-- **void configure(uint8_t mode1_mask = PCA9635_MODE1_ALLCALL, uint8_t mode2_mask = PCA9635_MODE2_NONE)** 
+- **void configure(uint8_t mode1_mask, uint8_t mode2_mask)** 
 configures the library, optionally setting the MODE1 and MODE2 configuration registers. 
 See PCA9635.h and datasheet for settings possible.
 **configure()** is typically used at startup.

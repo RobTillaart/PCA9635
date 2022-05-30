@@ -76,8 +76,7 @@ public:
 #endif
   bool     begin(uint8_t mode1_mask = PCA9635_MODE1_ALLCALL, 
                  uint8_t mode2_mask = PCA9635_MODE2_NONE);
-  void     configure(uint8_t mode1_mask = PCA9635_MODE1_ALLCALL, 
-                     uint8_t mode2_mask = PCA9635_MODE2_NONE);
+  void     configure(uint8_t mode1_mask, uint8_t mode2_mask);
   bool     isConnected();
 
   uint8_t  channelCount() { return _channelCount; };
