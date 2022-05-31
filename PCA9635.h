@@ -55,7 +55,7 @@
 // Configuration bits MODE2 register
 #define PCA9635_MODE2_BLINK         0x20  // 0 = dim          1 = blink
 #define PCA9635_MODE2_INVERT        0x10  // 0 = normal       1 = inverted
-#define PCA9635_MODE2_STOP          0x08  // 0 = on STOP      1 = on ACK
+#define PCA9635_MODE2_ACK           0x08  // 0 = on STOP      1 = on ACK
 #define PCA9635_MODE2_TOTEMPOLE     0x04  // 0 = open drain   1 = totem-pole
 #define PCA9635_MODE2_NONE          0x00
 
