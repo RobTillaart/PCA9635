@@ -2,7 +2,7 @@
 //    FILE: PCA9635.cpp
 //  AUTHOR: Rob Tillaart
 //    DATE: 23-apr-2016
-// VERSION: 0.4.2
+// VERSION: 0.4.3
 // PURPOSE: Arduino library for PCA9635 I2C LED driver
 //     URL: https://github.com/RobTillaart/PCA9635
 
@@ -16,9 +16,12 @@
 //
 PCA9635::PCA9635(const uint8_t deviceAddress, TwoWire *wire)
 {
-  _address      = deviceAddress;
-  _wire         = wire;
-  _channelCount = 16;
+  _address         = deviceAddress;
+  _wire            = wire;
+  _channelCount    = 16;
+  _data            = 0;
+  _error           = PCA9635_OK;
+  _OutputEnablePin = 255;
 }
 
 
@@ -48,6 +51,16 @@ bool PCA9635::begin(uint8_t mode1_mask, uint8_t mode2_mask)
 }
 
 
+void PCA9635::configure(uint8_t mode1_mask, uint8_t mode2_mask)
+{
+  _data = 0;
+  _error = 0;
+
+  setMode1(mode1_mask);
+  setMode2(mode2_mask);
+}
+
+
 bool PCA9635::isConnected()
 {
   _wire->beginTransmission(_address);
@@ -56,13 +69,9 @@ bool PCA9635::isConnected()
 }
 
 
-void PCA9635::configure(uint8_t mode1_mask, uint8_t mode2_mask)
+uint8_t PCA9635::channelCount()
 {
-  _data = 0;
-  _error = 0;
-
-  setMode1(mode1_mask);
-  setMode2(mode2_mask);
+  return _channelCount;
 }
 
 
@@ -174,14 +183,16 @@ uint8_t PCA9635::getLedDriverMode(uint8_t channel)
 }
 
 
-//  note error flag is reset after read!
+/////////////////////////////////////////////////////
+//
+//  ERROR
+//
 int PCA9635::lastError()
 {
   int e = _error;
   _error = 0;
   return e;
 }
-
 
 
 /////////////////////////////////////////////////////
@@ -283,6 +294,41 @@ uint8_t PCA9635::getAllCallAddress()
 }
 
 
+/////////////////////////////////////////////////////
+//
+//  OE - Output Enable control
+//
+bool PCA9635::setOutputEnablePin(uint8_t pin)
+{
+  if (_OutputEnablePin != 255)
+  {
+    _OutputEnablePin = pin;
+    pinMode(pin, OUTPUT);
+    return true;
+  }
+  return false;
+}
+
+
+bool PCA9635::enableOutput(bool on)
+{
+  if (_OutputEnablePin != 255)
+  {
+    digitalWrite(_OutputEnablePin, on ? LOW : HIGH);
+    return true;
+  }
+  return false;
+}
+
+
+uint8_t PCA9635::getOutputEnable()
+{
+  if (_OutputEnablePin != 255)
+  {
+    return digitalRead(_OutputEnablePin);
+  }
+  return LOW;
+}
 
 /////////////////////////////////////////////////////
 //

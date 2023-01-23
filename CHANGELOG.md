@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+## [0.4.3] - 2023-01-23
+- update GitHub actions
+- update license 2023
+- add OutputEnable control functions.
+- update readme.md.
+- minor edits
+- add example **PCA9635_OE_control.ino**
+
+
 ## [0.4.2] - 2022-11-19
 - add RP2040 in build-CI
 - add changelog.md
