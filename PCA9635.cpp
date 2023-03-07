@@ -363,7 +363,7 @@ uint8_t PCA9635::getOutputEnable()
   {
     return digitalRead(_OutputEnablePin);
   }
-  return LOW;
+  return HIGH;
 }
 
 
