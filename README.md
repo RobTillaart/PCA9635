@@ -206,6 +206,7 @@ See datasheet for the details
 
 - **bool setOutputEnablePin(uint8_t pin = 255)** sets the IO pin to connect to the OE pin of the PCA9635.
 A value of 255 indicates no pin set/selected.
+Sets the OE pin to LOW.
 Returns true on success.
 - **bool setOutputEnable(uint8_t value)** Sets the OE pin HIGH or LOW.
 All non zero values are HIGH.
@@ -230,6 +231,10 @@ by means of a PULL UP / DOWN resistor.
   - SUB CALL if possible?
   - ALL CALL if possible?
 - add examples
+- improve error handling (0.5.0)
+  - return values etc.
+  - documentation.
+
 
 #### Could
 
@@ -237,7 +242,7 @@ by means of a PULL UP / DOWN resistor.
 - merge with PCA9634 and a PCA963X base class if possible
 - restructure function groups 
   - in  .cpp to match .h
-  - readmemd
+  - readme.md
 
 
 #### Wont

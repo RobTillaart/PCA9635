@@ -83,7 +83,7 @@ public:
   //
   //  CONFIGURATION
   //
-  void     configure(uint8_t mode1_mask, uint8_t mode2_mask);
+  uint8_t  configure(uint8_t mode1_mask, uint8_t mode2_mask);
   uint8_t  channelCount();
 
   uint8_t  setLedDriverMode(uint8_t channel, uint8_t mode);
@@ -152,7 +152,7 @@ public:
   //  OE - Output Enable control
   //
   bool     setOutputEnablePin(uint8_t pin);
-  bool     enableOutput(bool on);
+  bool     setOutputEnable(bool on);
   uint8_t  getOutputEnable();
 
 
