@@ -332,13 +332,14 @@ uint8_t PCA9635::getAllCallAddress()
 //
 bool PCA9635::setOutputEnablePin(uint8_t pin)
 {
+  _OutputEnablePin = pin;
   if (_OutputEnablePin != 255)
   {
-    _OutputEnablePin = pin;
     pinMode(_OutputEnablePin, OUTPUT);
     digitalWrite(_OutputEnablePin, LOW);
     return true;
   }
+  //  must it be set to HIGH now?
   return false;
 }
 

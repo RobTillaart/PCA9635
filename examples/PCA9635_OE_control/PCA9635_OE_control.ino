@@ -23,13 +23,13 @@ void setup()
 
   //  just one channel
   ledArray.write1(1, 100);
-  
+
   ledArray.setOutputEnablePin(12);
-  ledArray.enableOutput(true);
+  ledArray.setOutputEnable(true);
   delay(1000);
-  ledArray.enableOutput(false);
+  ledArray.setOutputEnable(false);
   delay(1000);
-  ledArray.enableOutput(true);
+  ledArray.setOutputEnable(true);
 
   //  TODO  elaborate
 
@@ -41,4 +41,5 @@ void loop()
 }
 
 
-// -- END OF FILE --
+//  -- END OF FILE --
+
