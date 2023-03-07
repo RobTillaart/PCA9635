@@ -95,20 +95,22 @@ unittest(test_OutputEnable)
 
   assertTrue(ledArray.begin());
 
-  assertEqual(LOW, ledArray.getOutputEnable());
-
-  assertTrue(ledArray.setOutputEnablePin(12));
-  assertEqual(LOW, ledArray.getOutputEnable());
-
-  assertTrue(ledArray.setOutputEnable(true));
   assertEqual(HIGH, ledArray.getOutputEnable());
 
-  assertTrue(ledArray.setOutputEnable(false));
-  assertEqual(LOW, ledArray.getOutputEnable());
+  assertTrue(ledArray.setOutputEnablePin(12));
+  assertEqual(HIGH, ledArray.getOutputEnable());
 
   assertTrue(ledArray.setOutputEnable(true));
-  assertTrue(ledArray.setOutputEnablePin(255));
   assertEqual(LOW, ledArray.getOutputEnable());
+
+  assertTrue(ledArray.setOutputEnable(false));
+  assertEqual(HIGH, ledArray.getOutputEnable());
+
+  assertTrue(ledArray.setOutputEnable(true));
+  assertEqual(LOW, ledArray.getOutputEnable());
+
+  assertTrue(ledArray.setOutputEnablePin(255));
+  assertEqual(HIGH, ledArray.getOutputEnable());
 }
 
 

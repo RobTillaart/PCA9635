@@ -330,13 +330,15 @@ uint8_t PCA9635::getAllCallAddress()
 //
 //  OE - Output Enable control
 //
+//  active LOW see page 5 par 6.2 datasheet
+//
 bool PCA9635::setOutputEnablePin(uint8_t pin)
 {
   _OutputEnablePin = pin;
   if (_OutputEnablePin != 255)
   {
     pinMode(_OutputEnablePin, OUTPUT);
-    digitalWrite(_OutputEnablePin, LOW);
+    digitalWrite(_OutputEnablePin, HIGH);
     return true;
   }
   //  must it be set to HIGH now?
