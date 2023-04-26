@@ -51,6 +51,18 @@ bool PCA9635::begin(uint8_t mode1_mask, uint8_t mode2_mask)
 }
 
 
+bool PCA9635::isConnected()
+{
+  _wire->beginTransmission(_address);
+  _error = _wire->endTransmission();
+  return (_error == 0);
+}
+
+
+/////////////////////////////////////////////////////
+//
+//  CONFIGURATION
+//
 uint8_t PCA9635::configure(uint8_t mode1_mask, uint8_t mode2_mask)
 {
   _data = 0;
@@ -67,86 +79,9 @@ uint8_t PCA9635::configure(uint8_t mode1_mask, uint8_t mode2_mask)
 }
 
 
-bool PCA9635::isConnected()
-{
-  _wire->beginTransmission(_address);
-  _error = _wire->endTransmission();
-  return (_error == 0);
-}
-
-
 uint8_t PCA9635::channelCount()
 {
   return _channelCount;
-}
-
-
-//  write value to single PWM registers
-uint8_t PCA9635::write1(uint8_t channel, uint8_t value)
-{
-  return writeN(channel, &value, 1);
-}
-
-
-//  write three values in consecutive PWM registers
-//  typically for RGB values
-uint8_t PCA9635::write3(uint8_t channel, uint8_t R, uint8_t G, uint8_t B)
-{
-  uint8_t arr[3] = { R, G, B };
-  return writeN(channel, arr, 3);
-}
-
-
-//  write count values in consecutive PWM registers
-//  checks if [channel + count - 1 > 15]
-uint8_t PCA9635::writeN(uint8_t channel, uint8_t* arr, uint8_t count)
-{
-  if (channel + count > _channelCount)
-  {
-    _error = PCA9635_ERR_CHAN;
-    return PCA9635_ERROR;
-  }
-  uint8_t base = PCA9635_PWM(channel);
-  _wire->beginTransmission(_address);
-  _wire->write(base);
-  for(uint8_t i = 0; i < count; i++)
-  {
-    _wire->write(arr[i]);
-  }
-  _error = _wire->endTransmission();
-  if (_error != 0)
-  {
-    _error = PCA9635_ERR_I2C;
-    return PCA9635_ERROR;
-  }
-  _error = PCA9635_OK;
-  return _error;
-}
-
-
-uint8_t PCA9635::writeMode(uint8_t reg, uint8_t value)
-{
-  if ((reg == PCA9635_MODE1) || (reg == PCA9635_MODE2))
-  {
-    writeReg(reg, value);
-    return PCA9635_OK;
-  }
-  _error = PCA9635_ERR_REG;
-  return _error;
-}
-
-
-//  Note 0xFF can also mean an error....  check error flag..
-uint8_t PCA9635::readMode(uint8_t reg)
-{
-  if ((reg == PCA9635_MODE1) || (reg == PCA9635_MODE2))
-  {
-    _error = PCA9635_OK;
-    uint8_t value = readReg(reg);
-    return value;
-  }
-  _error = PCA9635_ERR_REG;
-  return _error;
 }
 
 
@@ -190,6 +125,128 @@ uint8_t PCA9635::getLedDriverMode(uint8_t channel)
   _error = PCA9635_OK;
   return value;
 }
+
+
+uint8_t PCA9635::writeMode(uint8_t reg, uint8_t value)
+{
+  if ((reg == PCA9635_MODE1) || (reg == PCA9635_MODE2))
+  {
+    writeReg(reg, value);
+    return PCA9635_OK;
+  }
+  _error = PCA9635_ERR_REG;
+  return _error;
+}
+
+
+//  Note 0xFF can also mean an error....  check error flag..
+uint8_t PCA9635::readMode(uint8_t reg)
+{
+  if ((reg == PCA9635_MODE1) || (reg == PCA9635_MODE2))
+  {
+    _error = PCA9635_OK;
+    uint8_t value = readReg(reg);
+    return value;
+  }
+  _error = PCA9635_ERR_REG;
+  return _error;
+}
+
+
+uint8_t PCA9635::setMode1(uint8_t value)
+{
+  return writeMode(PCA9635_MODE1, value);
+}
+
+
+uint8_t PCA9635::setMode2(uint8_t value) 
+{
+  return writeMode(PCA9635_MODE2, value);
+}
+
+
+uint8_t PCA9635::getMode1()              
+{
+  return readMode(PCA9635_MODE1);
+}
+
+
+uint8_t PCA9635::getMode2()              
+{
+  return readMode(PCA9635_MODE2);
+}
+
+
+void PCA9635::setGroupPWM(uint8_t value) 
+{
+  writeReg(PCA9635_GRPPWM, value);
+}
+
+
+uint8_t PCA9635::getGroupPWM() 
+{
+  return readReg(PCA9635_GRPPWM);
+}
+
+
+void PCA9635::setGroupFREQ(uint8_t value) 
+{
+  writeReg(PCA9635_GRPFREQ, value);
+}
+
+
+uint8_t PCA9635::getGroupFREQ() 
+{
+  return readReg(PCA9635_GRPFREQ);
+}
+
+
+/////////////////////////////////////////////////////
+//
+//  WRITE
+//
+//  write value to single PWM registers
+uint8_t PCA9635::write1(uint8_t channel, uint8_t value)
+{
+  return writeN(channel, &value, 1);
+}
+
+
+//  write three values in consecutive PWM registers
+//  typically for RGB values
+uint8_t PCA9635::write3(uint8_t channel, uint8_t R, uint8_t G, uint8_t B)
+{
+  uint8_t arr[3] = { R, G, B };
+  return writeN(channel, arr, 3);
+}
+
+
+//  write count values in consecutive PWM registers
+//  checks if [channel + count - 1 > 15]
+uint8_t PCA9635::writeN(uint8_t channel, uint8_t* arr, uint8_t count)
+{
+  if (channel + count > _channelCount)
+  {
+    _error = PCA9635_ERR_CHAN;
+    return PCA9635_ERROR;
+  }
+  uint8_t base = PCA9635_PWM(channel);
+  _wire->beginTransmission(_address);
+  _wire->write(base);
+  for(uint8_t i = 0; i < count; i++)
+  {
+    _wire->write(arr[i]);
+  }
+  _error = _wire->endTransmission();
+  if (_error != 0)
+  {
+    _error = PCA9635_ERR_I2C;
+    return PCA9635_ERROR;
+  }
+  _error = PCA9635_OK;
+  return _error;
+}
+
 
 
 /////////////////////////////////////////////////////

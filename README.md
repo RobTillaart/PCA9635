@@ -286,29 +286,33 @@ PCA.writeLedOut(3, mask);
 #### Must
 
 - improve documentation
+  - restructure readme.md
+
 
 #### Should
 
-- move code from .h to .cpp
+- improve error handling (0.5.0)
+  - return values etc.
+  - documentation.
+- keep in sync with PCA9634 developments
+
+
+#### Could
+
 - unit tests
   - SUB CALL if possible?
   - ALL CALL if possible?
 - add examples
   - read/writeLedOut()
-- improve error handling (0.5.0)
-  - return values etc.
-  - documentation.
-
-
-#### Could
-
-- sync with PCA9634 developments
-- merge with PCA9634 and a PCA963X base class if possible
-- restructure function groups 
-  - in  .cpp to match .h
-  - readme.md
+- **setGroupPWM()**
+  - PWM also in %% ?
+- **setGroupFreq()**
+  -  set time in milliseconds and round to nearest value?
 
 
 #### Wont
-
-
+- consider implementing 
+  - clearMode1() and clearMode2() functions.
+  - only upon request.
+- merge with PCA9634 and a PCA963X base class if possible
+  - only upon request.
