@@ -2,7 +2,7 @@
 //    FILE: PCA9635.cpp
 //  AUTHOR: Rob Tillaart
 //    DATE: 23-apr-2016
-// VERSION: 0.4.4
+// VERSION: 0.4.5
 // PURPOSE: Arduino library for PCA9635 I2C LED driver
 //     URL: https://github.com/RobTillaart/PCA9635
 
@@ -187,6 +187,7 @@ uint8_t PCA9635::getLedDriverMode(uint8_t channel)
   uint8_t reg = PCA9635_LEDOUT_BASE + (channel >> 2);
   uint8_t shift = (channel & 0x03) * 2;  //  0, 2, 4, 6 places
   uint8_t value = (readReg(reg) >> shift ) & 0x03;
+  _error = PCA9635_OK;
   return value;
 }
 
@@ -389,6 +390,25 @@ int PCA9635::I2C_SoftwareReset(uint8_t method)
   _wire->beginTransmission(0x00);
   _wire->write(0x06);
   return _wire->endTransmission(true);
+}
+
+
+///////////////////////////////////////////////////////////////
+//
+//  EXPERIMENTAL LEDOUT
+//
+uint8_t PCA9635::writeLedOut(uint8_t reg, uint8_t mask)
+{
+  if (reg > 3) return PCA9635_ERROR;
+  writeReg(PCA9635_LEDOUT_BASE + reg, mask);
+  return PCA9635_OK;
+}
+
+
+uint8_t PCA9635::readLedOut(uint8_t reg)
+{
+  if (reg > 3) return 0x00;
+  readReg(PCA9635_LEDOUT_BASE + reg);
 }
 
 

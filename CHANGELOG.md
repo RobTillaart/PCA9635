@@ -6,10 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [0.4.5] - 2023-04-26
+- add **writeLedOut(reg, mask)** experimental
+- add **readLedOut(reg)** experimental
+- update readme.md
+- minor edits
+
+
 ## [0.4.4] - 2023-01-23
 - fix #22 update documentation
 - add **I2C_SoftwareReset()** experimental
-
 
 ## [0.4.3] - 2023-01-23
 - update GitHub actions

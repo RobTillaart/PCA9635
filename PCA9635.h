@@ -3,7 +3,7 @@
 //    FILE: PCA9635.h
 //  AUTHOR: Rob Tillaart
 //    DATE: 23-apr-2016
-// VERSION: 0.4.4
+// VERSION: 0.4.5
 // PURPOSE: Arduino library for PCA9635 I2C LED driver, 16 channel
 //     URL: https://github.com/RobTillaart/PCA9635
 
@@ -12,7 +12,7 @@
 #include "Wire.h"
 
 
-#define PCA9635_LIB_VERSION         (F("0.4.4"))
+#define PCA9635_LIB_VERSION         (F("0.4.5"))
 
 #define PCA9635_MODE1               0x00
 #define PCA9635_MODE2               0x01
@@ -156,8 +156,21 @@ public:
   uint8_t  getOutputEnable();
 
 
-  //  EXPERIMENTAL 0.4.4
+  /////////////////////////////////////////////////////
+  //
+  //  EXPERIMENTAL
+  //
+  //  0.4.4
   int I2C_SoftwareReset(uint8_t method);
+  //  0.4.5
+  //  writing reg 14-17  LEDOUT
+  //  reg   LEDS
+  //  0     0..3
+  //  1     4..7
+  //  2     8..11
+  //  3     12..15
+  uint8_t  writeLedOut(uint8_t reg, uint8_t mask);
+  uint8_t  readLedOut(uint8_t reg); 
 
 
 private:

@@ -32,7 +32,7 @@ library is related to the 8 channel https://github.com/RobTillaart/PCA9634 class
 
 - **PCA9635(uint8_t deviceAddress, TwoWire \*wire = &Wire)** Constructor with I2C device address, 
 and optional the Wire interface as parameter.
-- **bool begin(uint8_t mode1_mask = PCA9634_MODE1_ALLCALL, uint8_t mode2_mask = PCA9634_MODE2_NONE)** 
+- **bool begin(uint8_t mode1_mask = PCA9635_MODE1_ALLCALL, uint8_t mode2_mask = PCA9635_MODE2_NONE)** 
 initializes the library after startup. Optionally setting the MODE1 and MODE2 configuration registers.
 See PCA9635.h and datasheet for settings possible.
 - **bool begin(int sda, int scl, uint8_t mode1_mask = PCA9635_MODE1_ALLCALL, uint8_t mode2_mask = PCA9635_MODE2_NONE)** 
@@ -72,7 +72,7 @@ Requires LEDs' DriverMode of the specific channels to be in PWM mode.
 writes three consecutive PWM registers.
 typical use is to write R, G, B values for a full colour LED.
 - **uint8_t writeN(uint8_t channel, uint8_t \* array, uint8_t count)** 
-write count consecutive PWM registers. 
+write count consecutive PWM registers.
 May return **PCA9635_ERR_WRITE** if array has too many elements 
 (including channel as offset).
 
@@ -167,10 +167,10 @@ AllCall is automatically activated for each device on startup.
 
 #### Description
 
-**SUB CALL** allows one to make groups of PCA9634 devices and control them on group level.
+**SUB CALL** allows one to make groups of PCA9635 devices and control them on group level.
 The number of groups one can make depends on free I2C addresses on one I2C bus.
 Using multiple I2C buses or multiplexers will even increase the possible number. 
-Every PCA9634 device can be member of up to three of these groups. 
+Every PCA9635 device can be member of up to three of these groups. 
 To become member one needs to set the **setSubCallAddress(nr, address)** and enable 
 it with **enableSubCall(nr)**.
 
@@ -199,7 +199,7 @@ The functions to enable all/sub-addresses are straightforward:
 
 Since 0.4.3 (experimental) support to control the OE (Output Enable) pin of the PCA9635.
 This OE pin can control all LEDs simultaneously. 
-It also allows to control multiple PCA9634 modules by connecting the OE pins.
+It also allows to control multiple PCA9635 modules by connecting the OE pins.
 Think of simultaneous switching ON/OFF or get dimming with a high frequency PWM.
 Or use 2 modules alternatively by placing an inverter in between.
 
@@ -226,7 +226,7 @@ When using the software reset, ALL devices attached to the bus are set to their 
 Generally, there are multiple definitions of software resets by the I2C inventor NXP.
 To accommodate this, two different modes for this function have been defined and tested (see PCA9634).
 
-- Method 1 is a tested method which is specific to the PCA9634.
+- Method 1 is a tested method which is specific to the PCA9635.
 Since the number of different types of I2C chips is very large, side-effects on other chips might be possible.
 Before using this method, consult the data sheets of all chips on the bus to mitigate potential undefined states.
 - Method 0 is a somewhat “general” method which resets many chips on the I2C-bus.
@@ -246,6 +246,41 @@ please give feedback, so the documentation can be improved.
 For further details of the development, see - #10 (PCA9634 repo)
 
 
+#### LEDOUT
+
+Experimental, read datasheet 7.3.6
+
+The LEDOUT0 (14) .. LEDOUT3 (17) registers can be used to set the 
+operational mode how each channel / LED is controlled. 
+The default in this library is to use PWM per channel
+but one can also set a channel / LED fully ON or OFF.
+
+The 4 registers LEDOUT0 .. LEDOUT3 each control 4 channels
+
+|  register  |  channels  |  mask layout  |  notes  |
+|:----------:|:----------:|:-------------:|:-------:|
+|    0       |   0 ..  3  |   33221100    |  every channel has 2 bits.
+|    1       |   4 ..  7  |   idem        |
+|    2       |   8 .. 11  |   idem        |
+|    3       |  12 .. 15  |   idem        |
+
+- **uint8_t writeLedOut(uint8_t reg, uint8_t mask)**
+  - reg = 0..3, if larger than 3 an error is returned.
+  - mask see below.
+- **uint8_t readLedOut(uint8_t reg)**
+  - reg = 0..3, if larger than 3 0x00 is returned.
+  - returns the register 
+
+To set channel 14 OFF and 15 ON:
+
+```cpp
+uint8_t mask = PCA.readLedOut(3);
+mask &= 0b00001111;  //  set OFF both 14 and 15
+mask |= 0b01000000;  //  set ON 15
+PCA.writeLedOut(3, mask);
+```
+
+
 ## Future
 
 #### Must
@@ -259,6 +294,7 @@ For further details of the development, see - #10 (PCA9634 repo)
   - SUB CALL if possible?
   - ALL CALL if possible?
 - add examples
+  - read/writeLedOut()
 - improve error handling (0.5.0)
   - return values etc.
   - documentation.
