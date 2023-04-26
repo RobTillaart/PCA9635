@@ -408,7 +408,7 @@ uint8_t PCA9635::writeLedOut(uint8_t reg, uint8_t mask)
 uint8_t PCA9635::readLedOut(uint8_t reg)
 {
   if (reg > 3) return 0x00;
-  readReg(PCA9635_LEDOUT_BASE + reg);
+  return readReg(PCA9635_LEDOUT_BASE + reg);
 }
 
 
