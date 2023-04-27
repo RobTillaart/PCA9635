@@ -168,7 +168,8 @@ public:
   //  2     8..11
   //  3     12..15
   uint8_t  writeLedOut(uint8_t reg, uint8_t mask);
-  uint8_t  readLedOut(uint8_t reg); 
+  uint8_t  readLedOut(uint8_t reg);
+  uint8_t  setLedDriverMode(uint8_t mode);
 
 
 private:

@@ -159,43 +159,43 @@ uint8_t PCA9635::setMode1(uint8_t value)
 }
 
 
-uint8_t PCA9635::setMode2(uint8_t value) 
+uint8_t PCA9635::setMode2(uint8_t value)
 {
   return writeMode(PCA9635_MODE2, value);
 }
 
 
-uint8_t PCA9635::getMode1()              
+uint8_t PCA9635::getMode1()
 {
   return readMode(PCA9635_MODE1);
 }
 
 
-uint8_t PCA9635::getMode2()              
+uint8_t PCA9635::getMode2()
 {
   return readMode(PCA9635_MODE2);
 }
 
 
-void PCA9635::setGroupPWM(uint8_t value) 
+void PCA9635::setGroupPWM(uint8_t value)
 {
   writeReg(PCA9635_GRPPWM, value);
 }
 
 
-uint8_t PCA9635::getGroupPWM() 
+uint8_t PCA9635::getGroupPWM()
 {
   return readReg(PCA9635_GRPPWM);
 }
 
 
-void PCA9635::setGroupFREQ(uint8_t value) 
+void PCA9635::setGroupFREQ(uint8_t value)
 {
   writeReg(PCA9635_GRPFREQ, value);
 }
 
 
-uint8_t PCA9635::getGroupFREQ() 
+uint8_t PCA9635::getGroupFREQ()
 {
   return readReg(PCA9635_GRPFREQ);
 }
@@ -466,6 +466,34 @@ uint8_t PCA9635::readLedOut(uint8_t reg)
 {
   if (reg > 3) return 0x00;
   return readReg(PCA9635_LEDOUT_BASE + reg);
+}
+
+
+//  todo move to right section after testing.
+uint8_t PCA9635::setLedDriverMode(uint8_t mode)
+{
+  if (mode > 3) return PCA9635_ERR_MODE;
+  uint8_t mask = 0b00000000;
+  switch(mode)
+  {
+    case PCA9635_LEDGRPPWM:
+      mask = 0b11111111;
+      break;
+    case PCA9635_LEDPWM:
+      mask = 0b10101010;
+      break;
+    case PCA9635_LEDON:
+      mask = 0b01010101;
+      break;
+    default:
+      mask = 0b00000000;
+      break;
+  }
+  for (int reg = 0; reg < 3; reg++)
+  {
+    writeLedOut(reg, mask);
+  }
+  return PCA9635_OK;
 }
 
 

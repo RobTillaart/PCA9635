@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.4.5] - 2023-04-26
 - add **writeLedOut(reg, mask)** experimental
 - add **readLedOut(reg)** experimental
+- add **setLedDriverMode(mode)** experimental
+- add example PCA9635_shift_rotate.ino
 - move code from .h to .cpp
 - reorder code
 - update readme.md

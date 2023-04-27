@@ -49,6 +49,8 @@ See PCA9635.h and datasheet for settings possible.
 Configure LED behaviour.
 
 - **uint8_t setLedDriverMode(uint8_t channel, uint8_t mode)** mode is 0..3 See datasheet for full details.
+  - returns error code, see below.
+- **uint8_t setLedDriverMode(uint8_t mode)** set same mode for ALL channels.
 - **uint8_t getLedDriverMode(uint8_t channel)** returns the current mode of the channel.
 
 |  LED mode           |  Value  |  Description                        |
@@ -248,12 +250,13 @@ For further details of the development, see - #10 (PCA9634 repo)
 
 #### LEDOUT
 
-Experimental, read datasheet 7.3.6
+Experimental, needs testing, read datasheet 7.3.6
 
 The LEDOUT0 (14) .. LEDOUT3 (17) registers can be used to set the 
 operational mode how each channel / LED is controlled. 
-The default in this library is to use PWM per channel
-but one can also set a channel / LED fully ON or OFF.
+The typical use case is to use PWM per channel
+but one can also set a channel / LED fully ON or OFF. 
+These functions are a fast way to set multiple LEDs ON/OFF.
 
 The 4 registers LEDOUT0 .. LEDOUT3 each control 4 channels
 
@@ -271,7 +274,7 @@ The 4 registers LEDOUT0 .. LEDOUT3 each control 4 channels
   - reg = 0..3, if larger than 3 0x00 is returned.
   - returns the register 
 
-To set channel 14 OFF and 15 ON:
+To set channel 14 OFF and 15 ON simultaneously:
 
 ```cpp
 uint8_t mask = PCA.readLedOut(3);
