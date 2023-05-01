@@ -23,15 +23,15 @@ void setup()
   Serial.println();
 
   ledArray.begin();
-  //  testpulse per channel
+  //  test pulse per channel
   for (int channel = 0; channel < ledArray.channelCount(); channel++)
   {
-    ledArray.setLedDriverMode(channel, PCA9635_LEDON);
+    ledArray.setLedDriverMode(channel, PCA963X_LEDON);
     delay(200);
-    ledArray.setLedDriverMode(channel, PCA9635_LEDOFF);
+    ledArray.setLedDriverMode(channel, PCA963X_LEDOFF);
   }
   //  set all to PWM
-  ledArray.setLedDriverMode(PCA9635_LEDPWM);
+  ledArray.setLedDriverMode(PCA963X_LEDPWM);
 
 
   initArray();
@@ -79,6 +79,7 @@ void initArray()
   }
 }
 
+
 void shiftLeft(uint8_t newValue)
 {
   for (int i = 0; i < 15; i++)
@@ -87,6 +88,7 @@ void shiftLeft(uint8_t newValue)
   }
   arr[15] = newValue;
 }
+
 
 void shiftRight(uint8_t newValue)
 {
@@ -97,10 +99,12 @@ void shiftRight(uint8_t newValue)
   arr[0] = newValue;
 }
 
+
 void rotateLeft()
 {
   shiftLeft(arr[0]);
 }
+
 
 void rotateRight()
 {

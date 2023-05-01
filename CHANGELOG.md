@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - add **readLedOut(reg)** experimental
 - add **setLedDriverMode(mode)** experimental
 - add example PCA9635_shift_rotate.ino
+- start renaming #defines PCA963X... to prepare merge with PCA9634.
+  - old defines will work until 0.5.0.
 - move code from .h to .cpp
 - reorder code
 - update readme.md
