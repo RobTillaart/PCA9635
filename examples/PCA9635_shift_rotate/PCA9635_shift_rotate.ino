@@ -13,6 +13,8 @@
 PCA9635 ledArray(0x20);
 
 uint8_t arr[16];  //  working array
+uint8_t channels = 16; 
+
 
 
 void setup()
@@ -23,8 +25,10 @@ void setup()
   Serial.println();
 
   ledArray.begin();
+
+  channels = ledArray.channelCount();
   //  test pulse per channel
-  for (int channel = 0; channel < ledArray.channelCount(); channel++)
+  for (int channel = 0; channel < channels; channel++)
   {
     ledArray.setLedDriverMode(channel, PCA963X_LEDON);
     delay(200);
@@ -35,33 +39,33 @@ void setup()
 
 
   initArray();
-  ledArray.writeN(0, arr, 16);
-  for (int i = 0; i < 16; i++)
+  ledArray.writeN(0, arr, channels);
+  for (int i = 0; i < channels; i++)
   {
     delay(500);
     rotateLeft();
-    ledArray.writeN(0, arr, 16);
+    ledArray.writeN(0, arr, channels);
   }
-  for (int i = 0; i < 16; i++)
+  for (int i = 0; i < channels; i++)
   {
     delay(500);
     shiftLeft(0);
-    ledArray.writeN(0, arr, 16);
+    ledArray.writeN(0, arr, channels);
   }
 
   initArray();
-  ledArray.writeN(0, arr, 16);
-  for (int i = 0; i < 16; i++)
+  ledArray.writeN(0, arr, channels);
+  for (int i = 0; i < channels; i++)
   {
     delay(500);
     rotateRight();
-    ledArray.writeN(0, arr, 16);
+    ledArray.writeN(0, arr, channels);
   }
-  for (int i = 0; i < 16; i++)
+  for (int i = 0; i < channels; i++)
   {
     delay(500);
     shiftRight(0);
-    ledArray.writeN(0, arr, 16);
+    ledArray.writeN(0, arr, channels);
   }
 }
 
@@ -73,7 +77,7 @@ void loop()
 
 void initArray()
 {
-  for (int i = 0; i < 16; i++)
+  for (int i = 0; i < channels; i++)
   {
     arr[i] = i * 16 - 1;  //  0..255
   }
@@ -82,7 +86,7 @@ void initArray()
 
 void shiftLeft(uint8_t newValue)
 {
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < channels-1; i++)
   {
     arr[i] = arr[i + 1];
   }
@@ -92,7 +96,7 @@ void shiftLeft(uint8_t newValue)
 
 void shiftRight(uint8_t newValue)
 {
-  for (int i = 15; i > 0; i--)
+  for (int i = channels-1; i > 0; i--)
   {
     arr[i] = arr[i - 1];
   }
@@ -108,7 +112,7 @@ void rotateLeft()
 
 void rotateRight()
 {
-  shiftRight(arr[15]);
+  shiftRight(arr[channels-1]);
 }
 
 

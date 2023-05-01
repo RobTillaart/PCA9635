@@ -48,9 +48,12 @@ unittest_teardown()
 
 unittest(test_constants)
 {
+  fprintf(stderr, "\nregisters");
   assertEqual(PCA963X_MODE1      , 0x00);
   assertEqual(PCA963X_MODE2      , 0x01);
 
+  assertEqual(PCA963X_PWM(0)     , 0x82);
+  assertEqual(PCA963X_PWM(1)     , 0x83);
   assertEqual(PCA963X_GRPPWM     , 0x12);
   assertEqual(PCA963X_GRPFREQ    , 0x13);
   assertEqual(PCA963X_LEDOUT_BASE, 0x14);
@@ -98,7 +101,7 @@ unittest(test_OutputEnable)
   assertEqual(HIGH, ledArray.getOutputEnable());
 
   assertTrue(ledArray.setOutputEnablePin(12));
-  //  assertEqual(HIGH, ledArray.getOutputEnable());  need mock
+  //  assertEqual(HIGH, ledArray.getOutputEnable()); // need mock
 
   assertTrue(ledArray.setOutputEnable(true));
   //  assertEqual(LOW, ledArray.getOutputEnable());

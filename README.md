@@ -16,10 +16,14 @@ Arduino library for PCA9635 I2C 8 bit PWM LED driver, 16 channel.
 This library is to control the I2C PCA9635 PWM extender.
 The 16 channels are independently configurable in steps of 1/256.
 This allows for better than 1% fine tuning of the duty-cycle
-of the PWM signal. 
+of the PWM signal.
 
-library is related to the 8 channel https://github.com/RobTillaart/PCA9634 class.
-(these might merge in the future)
+
+#### Related
+
+- https://github.com/RobTillaart/PCA9634 (8 channel)
+- https://github.com/RobTillaart/PCA9635 (16 channel)
+- https://github.com/RobTillaart/PCA9685_RT (16 channel)
 
 
 ## Interface
@@ -55,10 +59,11 @@ Configure LED behaviour.
 
 |  LED mode           |  Value  |  Description                        |
 |:--------------------|:-------:|:------------------------------------|
-|  PCA9635_LEDOFF     |   0x00  |  led is 100% off, default @startup  |
-|  PCA9635_LEDON      |   0x01  |  led is 100% on.                    |
-|  PCA9635_LEDPWM     |   0x02  |  set LED in PWM mode, 0..255        |
-|  PCA9635_LEDGRPPWM  |   0x03  |  add LED to the GRPPWM*             |
+|  PCA963X_LEDOFF     |   0x00  |  led is 100% off, default @startup  |
+|  PCA963X_LEDON      |   0x01  |  led is 100% on.                    |
+|  PCA963X_LEDPWM     |   0x02  |  set LED in PWM mode, 0..255        |
+|  PCA963X_LEDGRPPWM  |   0x03  |  add LED to the GRPPWM*             |
+
 
 \* all LEDs in the group GRPPWM can be set to the same PWM value in one set.
 This is ideal to trigger e.g. multiple LEDs (servo's) at same time.
@@ -75,7 +80,7 @@ writes three consecutive PWM registers.
 typical use is to write R, G, B values for a full colour LED.
 - **uint8_t writeN(uint8_t channel, uint8_t \* array, uint8_t count)** 
 write count consecutive PWM registers.
-May return **PCA9635_ERR_WRITE** if array has too many elements 
+May return **PCA963X_ERR_CHAN** if array has too many elements 
 (including channel as offset).
 
 
@@ -107,22 +112,25 @@ useful to add or remove a single flag (bit masking).
 |  PCA9635_MODE1_SUB2       |  0x04   |  0 = disable       1 = enable        |
 |  PCA9635_MODE1_SUB3       |  0x02   |  0 = disable       1 = enable        |
 |  PCA9635_MODE1_ALLCALL    |  0x01   |  0 = disable       1 = enable        |
+|  PCA9635_MODE1_NONE       |  0x00   |                                      |
 |  ----                     |         |                                      |
 |  PCA9635_MODE2_BLINK      |  0x20   |  0 = dim           1 = blink         |
 |  PCA9635_MODE2_INVERT     |  0x10   |  0 = normal        1 = inverted      |
 |  PCA9635_MODE2_STOP       |  0x08   |  0 = on STOP       1 = on ACK        |
 |  PCA9635_MODE2_TOTEMPOLE  |  0x04   |  0 = open drain    1 = totem-pole    |
+|  PCA9635_MODE2_NONE       |  0x00   |                                      |
+
 
 These constants makes it easier to set modes without using a non descriptive
 bit mask. The constants can be merged by OR-ing them together, see snippet:
 
 ```cpp
-ledArray.writeMode(PCA9635_MODE2, 0b00110100);
+ledArray.writeMode(PCA963X_MODE2, 0b00110100);
 
 // would become
 
 uint8_t mode2_mask = PCA9635_MODE2_BLINK | PCA9635_MODE2_INVERT | PCA9635_MODE2_TOTEMPOLE;
-ledArray.writeMode(PCA9635_MODE2, mode2_mask);
+ledArray.writeMode(PCA963X_MODE2, mode2_mask);
 
 // or even
 
@@ -144,17 +152,17 @@ So 0x00 results in 41 ms blinking period (on AND off) and 0xFF in approx. 10.5 s
 
 #### Miscellaneous
 
-- **int lastError()** returns **PCA9635_OK** if all is OK, and other error codes otherwise.
+- **int lastError()** returns **PCA963X_OK** if all is OK, and other error codes otherwise.
 
-|  Error code         |  Value  |  Description          |
-|:--------------------|:-------:|:----------------------|
-|  PCA9635_OK         |   0x00  |  Everything went well
-|  PCA9635_ERROR      |   0xFF  |  Generic error
-|  PCA9635_ERR_WRITE  |   0xFE  |  Tries to write more elements than PWM channels
-|  PCA9635_ERR_CHAN   |   0xFD  |  Channel out of range
-|  PCA9635_ERR_MODE   |   0xFC  |  Invalid mode
-|  PCA9635_ERR_REG    |   0xFB  |  Invalid register
-|  PCA9635_ERR_I2C    |   0xFA  |  I2C communication error
+|  Error code         |  Value  |  Description           |
+|:--------------------|:-------:|:-----------------------|
+|  PCA963X_OK         |   0x00  |  Everything went well
+|  PCA963X_ERROR      |   0xFF  |  Generic error
+|  PCA963X_ERR_WRITE  |   0xFE  |  Tries to write more elements than PWM channels
+|  PCA963X_ERR_CHAN   |   0xFD  |  Channel out of range
+|  PCA963X_ERR_MODE   |   0xFC  |  Invalid mode
+|  PCA963X_ERR_REG    |   0xFB  |  Invalid register
+|  PCA963X_ERR_I2C    |   0xFA  |  I2C communication error
 
 
 ## SUB CALL and ALL CALL
@@ -294,10 +302,10 @@ PCA.writeLedOut(3, mask);
 
 #### Should
 
-- improve error handling (0.5.0)
+- improve error handling
   - return values etc.
   - documentation.
-- keep in sync with PCA9634 developments
+- keep in sync with PCA9634/5 developments
 
 
 #### Could
@@ -307,6 +315,12 @@ PCA.writeLedOut(3, mask);
   - ALL CALL if possible?
 - add examples
   - read/writeLedOut()
+- **setOutputEnablePWM(uint16_t value)** PWM support ?
+  - getter?
+- merge with PCA9635 and a PCA963X base class if possible
+- restructure function groups 
+  - in  .cpp to match .h
+  - readme.md
 - **setGroupPWM()**
   - PWM also in %% ?
 - **setGroupFreq()**
@@ -317,5 +331,5 @@ PCA.writeLedOut(3, mask);
 - consider implementing 
   - clearMode1() and clearMode2() functions.
   - only upon request.
-- merge with PCA9634 and a PCA963X base class if possible
+- merge with PCA9634/5 and a PCA963X base class if possible
   - only upon request.
