@@ -21,8 +21,15 @@ The 16 channels are independently configurable in steps of 1/256.
 This allows for better than 1% fine tuning of the duty-cycle
 of the PWM signal.
 
+Feedback is welcome, please open an issue with your questions and remarks.
 
-#### 0.5.0 Breaking change
+
+### 0.6.1 change
+
+Some functions are deprecated, replacements available.
+
+
+### 0.5.0 Breaking change
 
 Version 0.5.0 introduced a breaking change.
 You cannot set the pins in **begin()** any more.
@@ -31,11 +38,13 @@ The user has to call **Wire.begin()** and can optionally set the Wire pins
 before calling **begin()**.
 
 
-#### Related
+### Related
 
+- https://github.com/RobTillaart/PCA9632 (4 channel)
 - https://github.com/RobTillaart/PCA9634 (8 channel)
 - https://github.com/RobTillaart/PCA9635 (16 channel)
 - https://github.com/RobTillaart/PCA9685_RT (16 channel)
+- https://github.com/RobTillaart/map2colour
 
 
 ## Interface
@@ -51,21 +60,21 @@ before calling **begin()**.
 and optional the Wire interface as parameter.
 - **bool begin(uint8_t mode1_mask = PCA963X_MODE1_ALLCALL, uint8_t mode2_mask = PCA963X_MODE2_NONE)**
 initializes the library after startup. Optionally setting the MODE1 and MODE2 configuration registers.
-See PCA9635.h and datasheet for settings possible.
+See .h and datasheet for settings possible.
 - **void configure(uint8_t mode1_mask, uint8_t mode2_mask)**
 To configure the library after startup one can set the MODE1 and MODE2 configuration registers.
-See PCA9635.h and datasheet for settings possible.
+See .h and datasheet for settings possible.
 - **bool isConnected()** checks if address is available on I2C bus.
-- **uint8_t channelCount()** returns the number of channels = 16.
+- **uint8_t channelCount()** returns the number of channels (16).
 
 
 ### LedDriverMode
 
-Configure LED behaviour.
+Configure LED behaviour. Channel = 0..7. Check datasheet for details.
 
-- **uint8_t setLedDriverMode(uint8_t channel, uint8_t mode)** mode is 0..3 See datasheet for full details.
+- **uint8_t setLedDriverMode(uint8_t channel, uint8_t mode)** set mode for one channel.
   - returns error code, see below.
-- **uint8_t setLedDriverMode(uint8_t mode)** set same mode for ALL channels.
+- **uint8_t setLedDriverModeAll(uint8_t mode)** set same mode for ALL channels.
 - **uint8_t getLedDriverMode(uint8_t channel)** returns the current mode of the channel.
 
 |  LED mode           |  Value  |  Description                        |
@@ -94,23 +103,36 @@ write count consecutive PWM registers.
 May return **PCA963X_ERR_CHAN** if array has too many elements 
 (including channel as offset).
 
+Write all channels at once
+
+- **uint8_t writeAll(uint8_t \* arr)** array of at least 8 elements.
+- **uint8_t allOff()** idem.
+
+
+### Multi call writes.
+
+- **uint8_t writeN_noStop(uint8_t channel, uint8_t \* array, uint8_t count)** 
+See **Synchronous multi-chip multi-LED operation** below.
+- **writeStop()**
+
 
 ### Mode registers
 
-Used to configure the PCA963x general behaviour.
+Used to configure the PCA963x general behaviour. Check datasheet for details.
+
+- **uint8_t setMode1(uint8_t value)** see table below
+- **uint8_t setMode2(uint8_t value)** see table below
+- **uint8_t getMode1()**
+- **uint8_t getMode2()**
+
+
+Obsolete in near future, use functions above as those are less error prone.
 
 - **uint8_t writeMode(uint8_t reg, uint8_t value)** configuration of one of the two configuration registers.
-Check datasheet for details.
-- **uint8_t readMode(uint8_t reg)** reads back the configured mode, 
-useful to add or remove a single flag (bit masking).
-- **uint8_t setMode1(uint8_t value)** convenience wrapper.
-- **uint8_t setMode2(uint8_t value)** convenience wrapper.
-- **uint8_t getMode1()** convenience wrapper.
-- **uint8_t getMode2()** convenience wrapper.
+- **uint8_t readMode(uint8_t reg)** reads the configured mode
 
 
 ### Constants for mode registers
-
 
 |  Name                     |  Value  |  Description                         |
 |:--------------------------|:-------:|:-------------------------------------|
@@ -148,19 +170,19 @@ ledArray.setMode2(PCA963X_MODE2_BLINK | PCA963X_MODE2_INVERT | PCA963X_MODE2_TOT
 ```
 
 
-#### Group PWM and frequency
+### Group PWM and frequency
 
 Check datasheet for the details.
 
-- **void setGroupPWM(uint8_t value)** sets all channels that are part of the PWM group to value.
+- **uint8_t setGroupPWM(uint8_t value)** sets all channels that are part of the PWM group to value.
 - **uint8_t getGroupPWM()** get the current PWM setting of the group.
-- **void setGroupFREQ(uint8_t value)** is used for blinking the group of configured LED. 
+- **uint8_t setGroupFREQ(uint8_t value)** is used for blinking the group of configured LED. 
 Value goes from 0 to 255 with each step representing an increase of approx. 41 ms. 
 So 0x00 results in 41 ms blinking period (on AND off) and 0xFF in approx. 10.5 s.
 - **uint8_t getGroupFREQ()** returns the set frequency of the PWM group.
 
 
-### Miscellaneous
+### Error
 
 - **int lastError()** returns **PCA963X_OK** if all is OK, and other error codes otherwise.
 
@@ -179,7 +201,7 @@ So 0x00 results in 41 ms blinking period (on AND off) and 0xFF in approx. 10.5 s
 
 Please read the datasheet to understand the working of **SUB CALL** and **ALL CALL**.
 
-Since version 0.4.0 there is (experimental) support for the **SUB CALL** and **ALL CALL** functions.
+There is (experimental) support for the **SUB CALL** and **ALL CALL** functions.
 It needs more testing and if there are issues, please report.
 
 AllCall is automatically activated for each device on startup.
@@ -190,7 +212,7 @@ AllCall is automatically activated for each device on startup.
 **SUB CALL** allows one to make groups of PCA9635 devices and control them on group level.
 The number of groups one can make depends on free I2C addresses on one I2C bus.
 Using multiple I2C buses or multiplexers will even increase the possible number. 
-Every PCA9635 device can be member of up to three of these groups. 
+Every PCA9635 device can be member of up to three of these groups.
 To become member one needs to set the **setSubCallAddress(nr, address)** and enable 
 it with **enableSubCall(nr)**.
 
@@ -276,7 +298,7 @@ The typical use case is to use PWM per channel
 but one can also set a channel / LED fully ON or OFF. 
 These functions are a fast way to switch multiple LEDs ON/OFF.
 
-The 4 registers LEDOUT0 .. LEDOUT3 each control 4 channels
+The four registers LEDOUT0 .. LEDOUT3 each control 4 channels
 
 |  register  |  channels  |  mask layout  |  notes  |
 |:----------:|:----------:|:-------------:|:-------:|
@@ -309,18 +331,17 @@ PCA.writeLedOut(1, mask);
 - improve documentation
   - restructure readme.md
 
-
 #### Should
 
+- keep in sync with PCA9632/34/35/85 developments
 - improve error handling
   - return values etc.
   - documentation.
-- keep in sync with PCA9634/5 developments
-- remove OLD #defines PCA9635_... => PCA963X
-  - const int?
+- #defines ==> const int?
 
 #### Could
 
+- default values for functions.
 - unit tests
   - SUB CALL if possible?
   - ALL CALL if possible?
@@ -333,7 +354,7 @@ PCA.writeLedOut(1, mask);
   - readme.md
 - **setGroupFreq()**
   -  set time in milliseconds and round to nearest value?
-
+- read back (cache?)
 
 #### Wont
 
