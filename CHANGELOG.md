@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - rename setLedDriverMode() => setLedDriverModeAll()
 - add **writeAll(arr)**
 - add **allOff()**
+- remove old defines, all are now PCA963X_xxxx
 - update readme.md
 - update examples
 - minor edits
