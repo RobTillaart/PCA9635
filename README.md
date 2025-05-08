@@ -45,7 +45,7 @@ before calling **begin()**.
 ```
 
 
-#### Constructor
+### Constructor
 
 - **PCA9635(uint8_t deviceAddress, TwoWire \*wire = &Wire)** Constructor with I2C device address,
 and optional the Wire interface as parameter.
@@ -59,7 +59,7 @@ See PCA9635.h and datasheet for settings possible.
 - **uint8_t channelCount()** returns the number of channels = 16.
 
 
-#### LedDriverMode
+### LedDriverMode
 
 Configure LED behaviour.
 
@@ -80,7 +80,7 @@ Configure LED behaviour.
 This is ideal to trigger e.g. multiple LEDs (servo's) at same time.
 
 
-#### Read and write
+### Read and write
 
 Read and write individual values to LED channels. 
 Requires LEDs' DriverMode of the specific channels to be in PWM mode.
@@ -95,7 +95,7 @@ May return **PCA963X_ERR_CHAN** if array has too many elements
 (including channel as offset).
 
 
-#### Mode registers
+### Mode registers
 
 Used to configure the PCA963x general behaviour.
 
@@ -109,7 +109,7 @@ useful to add or remove a single flag (bit masking).
 - **uint8_t getMode2()** convenience wrapper.
 
 
-#### Constants for mode registers
+### Constants for mode registers
 
 
 |  Name                     |  Value  |  Description                         |
@@ -160,7 +160,7 @@ So 0x00 results in 41 ms blinking period (on AND off) and 0xFF in approx. 10.5 s
 - **uint8_t getGroupFREQ()** returns the set frequency of the PWM group.
 
 
-#### Miscellaneous
+### Miscellaneous
 
 - **int lastError()** returns **PCA963X_OK** if all is OK, and other error codes otherwise.
 
@@ -185,7 +185,7 @@ It needs more testing and if there are issues, please report.
 AllCall is automatically activated for each device on startup.
 
 
-#### Description
+### Description
 
 **SUB CALL** allows one to make groups of PCA9635 devices and control them on group level.
 The number of groups one can make depends on free I2C addresses on one I2C bus.
@@ -198,7 +198,7 @@ In the same way one can become member of an **ALL CALL** group.
 Typically there is only one such group but one can configure more of them by applying different addresses.
 
 
-#### Interface
+### Interface
 
 The functions to enable all/sub-addresses are straightforward:
 
@@ -215,7 +215,7 @@ The functions to enable all/sub-addresses are straightforward:
 - **uint8_t getAllCallAddress()**
 
 
-#### OutputEnable
+### OutputEnable
 
 Since 0.4.3 (experimental) support to control the OE (Output Enable) pin of the PCA9635.
 This OE pin can control all LEDs simultaneously. 
@@ -239,7 +239,7 @@ Note: the OE is LOW active.
 The user has to set the power on value by means of a PULL UP / DOWN resistor.
 
 
-#### I2C Software reset
+### I2C Software reset
 
 The goal of this function is to reset ALL devices on the bus.
 When using the software reset, ALL devices attached to the bus are set to their hardware startup conditions.
@@ -266,7 +266,7 @@ please give feedback, so the documentation can be improved.
 For further details of the development, see - #10 (PCA9634 repo)
 
 
-#### LEDOUT
+### LEDOUT
 
 Experimental, needs testing, read datasheet 7.3.6
 
