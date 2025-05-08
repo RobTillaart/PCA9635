@@ -157,14 +157,14 @@ These constants makes it easier to set modes without using a non descriptive
 bit mask. The constants can be merged by OR-ing them together, see snippet:
 
 ```cpp
-ledArray.writeMode(PCA963X_MODE2, 0b00110100);
+ledArray.setMode2(0b00110100);
 
 // would become
 
 uint8_t mode2_mask = PCA963X_MODE2_BLINK | PCA963X_MODE2_INVERT | PCA963X_MODE2_TOTEMPOLE;
-ledArray.writeMode(PCA963X_MODE2, mode2_mask);
+ledArray.setMode2(mode2_mask);
 
-// or even
+// or
 
 ledArray.setMode2(PCA963X_MODE2_BLINK | PCA963X_MODE2_INVERT | PCA963X_MODE2_TOTEMPOLE);
 ```
@@ -239,7 +239,7 @@ The functions to enable all/sub-addresses are straightforward:
 
 ### OutputEnable
 
-Since 0.4.3 (experimental) support to control the OE (Output Enable) pin of the PCA9635.
+There is (experimental) support to control the OE (Output Enable) pin of the PCA9635.
 This OE pin can control all LEDs simultaneously. 
 It also allows to control multiple devices by connecting the OE pins.
 Think of simultaneous switching ON/OFF or get dimming with a high frequency PWM.
